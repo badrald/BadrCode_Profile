@@ -6,7 +6,10 @@
     <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" />
-    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="css/modern-style.css" />
     <link rel="shortcut icon" href="images/favaicon.ico" type="image/x-icon" />
     <title>BadrCode</title>
   </head>
@@ -77,7 +80,9 @@
             </div>
             <div class="about-detail">
               <h3 class="color-white">الدرجة العلمية:</h3>
-              <p class="color-white">سيمستر السابع كلية التقنية الالكترونية - طرابلس</p>
+              <p class="color-white">
+                سيمستر السابع كلية التقنية الالكترونية - طرابلس
+              </p>
             </div>
             <div class="about-detail">
               <h3 class="color-white">المهارات:</h3>
@@ -303,7 +308,7 @@
     <div class="footer">
       <div class="container">
         <p class="color-white">
-          جميع الحقوق محفوظة &copy; 2024 بدر الدين عبد الله عوض الله أحمد
+          جميع الحقوق محفوظة &copy; 2025 بدر الدين عبد الله عوض الله أحمد
         </p>
         <div class="socail fl-left">
           <a href="https://www.facebook.com/badr.alden.374"
@@ -320,35 +325,114 @@
     <!-- نهاية الفوتر -->
 
     <script>
-      //بداية العداد متع المشاريع و الشهادات
       document.addEventListener("DOMContentLoaded", () => {
-        const counters = document.querySelectorAll(".count");
-        counters.forEach((counter) => {
-          counter.innerText = "0";
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute("href");
+            const targetElement = document.querySelector(targetId);
 
-          const updateCounter = () => {
-            const target = +counter.getAttribute("data-target");
-            const count = +counter.innerText;
-            const increment = target / 2;
+            if (targetElement) {
+              // Close mobile menu if open
+              if (navbarLinks.classList.contains("active")) {
+                navbarLinks.classList.remove("active");
+              }
 
-            if (count < target) {
-              counter.innerText = Math.ceil(count + increment);
-              setTimeout(updateCounter, 10);
-            } else {
-              counter.innerText = target;
+              window.scrollTo({
+                top: targetElement.offsetTop - 80,
+                behavior: "smooth",
+              });
             }
-          };
-
-          updateCounter();
+          });
         });
-      });
-      //الخاص بإظهار القائمة ناف بار في الشاشات الصغيرة
-      document.addEventListener("DOMContentLoaded", () => {
+
+        // Counter animation with IntersectionObserver
+        const counters = document.querySelectorAll(".count");
+        const counterObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const counter = entry.target;
+                counter.innerText = "0";
+
+                const updateCounter = () => {
+                  const target = +counter.getAttribute("data-target");
+                  const count = +counter.innerText;
+                  const increment = target / 20;
+
+                  if (count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(updateCounter, 50);
+                  } else {
+                    counter.innerText = target;
+                  }
+                };
+
+                updateCounter();
+                counterObserver.unobserve(counter);
+              }
+            });
+          },
+          { threshold: 0.5 }
+        );
+
+        counters.forEach((counter) => {
+          counterObserver.observe(counter);
+        });
+
+        // Mobile navigation menu toggle
         const navbarToggler = document.getElementById("navbarBtn");
         const navbarLinks = document.querySelector(".links");
-        const headerElement = document.querySelector(".header");
+
         navbarToggler.addEventListener("click", () => {
           navbarLinks.classList.toggle("active");
+          navbarToggler.classList.toggle("active");
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener("click", (e) => {
+          if (
+            !navbarLinks.contains(e.target) &&
+            !navbarToggler.contains(e.target) &&
+            navbarLinks.classList.contains("active")
+          ) {
+            navbarLinks.classList.remove("active");
+            navbarToggler.classList.remove("active");
+          }
+        });
+
+        // Navbar background change on scroll
+        const navbar = document.querySelector(".navbar");
+        window.addEventListener("scroll", () => {
+          if (window.scrollY > 50) {
+            navbar.classList.add("scrolled");
+          } else {
+            navbar.classList.remove("scrolled");
+          }
+        });
+
+        // Add animation classes to elements when they come into view
+        const animateElements = document.querySelectorAll(
+          ".about-detail, .project-card, .counter"
+        );
+        const animateObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add(
+                  "animate__animated",
+                  "animate__fadeInUp"
+                );
+                animateObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        animateElements.forEach((element) => {
+          animateObserver.observe(element);
         });
       });
     </script>
